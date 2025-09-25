@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>0xJessicaa Retro Desktop</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+    :root {
+      --window-blue: #2a8af7;
+      --window-light: #c0d8ff;
+      --window-dark: #001b70;
+      --window-gray: #f0f0f0;
+      --pixel-border: 4px;
+      --desktop-green: #1b5237;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Press Start 2P', system-ui, sans-serif;
+      background: repeating-linear-gradient(45deg, #0d2a1d, #0d2a1d 12px, #134029 12px, #134029 24px);
+      color: #000;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      image-rendering: pixelated;
+    }
+
+    #desktop {
+      flex: 1;
+      position: relative;
+      padding: 32px 32px 64px;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 48px;
+    }
+
+    .icon {
+      width: 92px;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+      color: #fff;
+      text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.7);
+    }
+
+    .icon:focus,
+    .icon:hover {
+      outline: 2px dashed #fff;
+      outline-offset: 4px;
+    }
+
+    .icon .pixel-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 8px;
+      background: linear-gradient(90deg, #f5f5f5 0 75%, #222 75%),
+                  linear-gradient(#f5f5f5 0 75%, #222 75%);
+      background-size: 8px 8px;
+      border: 4px solid #000;
+      box-shadow: inset -4px -4px #999, inset 4px 4px #fff;
+      display: grid;
+      place-items: center;
+      position: relative;
+    }
+
+    .icon[data-type="txt"] .pixel-icon::before {
+      content: "TXT";
+      font-size: 12px;
+      color: #001b70;
+      background: #fff;
+      border: 4px solid #000;
+      padding: 2px 4px;
+    }
+
+    .icon span {
+      display: block;
+      font-size: 10px;
+      line-height: 1.4;
+    }
+
+    .window {
+      width: min(480px, calc(100% - 80px));
+      background: var(--window-gray);
+      border: var(--pixel-border) solid #000;
+      box-shadow: 6px 6px 0 rgba(0,0,0,0.6);
+      position: absolute;
+      top: 120px;
+      left: 120px;
+      display: flex;
+      flex-direction: column;
+      z-index: 10;
+    }
+
+    .window.hidden {
+      display: none;
+    }
+
+    .window-header {
+      background: linear-gradient(180deg, var(--window-blue) 0%, var(--window-dark) 100%);
+      color: #fff;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: move;
+    }
+
+    .window-header .title {
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+
+    .window-controls {
+      display: flex;
+      gap: 8px;
+    }
+
+    .window-controls button {
+      width: 24px;
+      height: 24px;
+      border: 2px solid #fff;
+      background: #ff5555;
+      color: #fff;
+      font-family: inherit;
+      font-size: 12px;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .window-body {
+      padding: 24px;
+      background: repeating-linear-gradient(90deg, #fff, #fff 6px, #e1e1e1 6px, #e1e1e1 12px);
+      font-size: 12px;
+      color: #000;
+      line-height: 1.8;
+      min-height: 200px;
+      overflow: auto;
+    }
+
+    .window-body pre {
+      margin: 0;
+      white-space: pre-wrap;
+    }
+
+    #taskbar {
+      height: 56px;
+      background: linear-gradient(180deg, #b8b8b8 0%, #7a7a7a 100%);
+      border-top: 4px solid #000;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 24px;
+      box-shadow: inset 0 4px #fff;
+    }
+
+    #start-button {
+      border: 4px solid #000;
+      padding: 8px 16px;
+      font-size: 12px;
+      background: linear-gradient(180deg, #04a500 0%, #026800 100%);
+      color: #fff;
+      cursor: pointer;
+      box-shadow: inset -4px -4px #005200, inset 4px 4px #1dda0a;
+    }
+
+    #clock {
+      margin-left: auto;
+      padding: 8px 16px;
+      border: 4px solid #000;
+      background: #222;
+      color: #0ff0ff;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        font-size: 10px;
+      }
+
+      .icon {
+        width: 72px;
+      }
+
+      .window {
+        width: calc(100% - 40px);
+        left: 20px;
+        top: 80px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main id="desktop" role="main">
+    <button class="icon" data-target="about-window" data-type="txt" aria-label="Open about me text file">
+      <div class="pixel-icon" aria-hidden="true"></div>
+      <span>aboutme.txt</span>
+    </button>
+
+    <button class="icon" data-target="socials-window" data-type="txt" aria-label="Open socials text file">
+      <div class="pixel-icon" aria-hidden="true"></div>
+      <span>socials.txt</span>
+    </button>
+
+    <button class="icon" data-target="projects-window" data-type="txt" aria-label="Open projects text file">
+      <div class="pixel-icon" aria-hidden="true"></div>
+      <span>projects.txt</span>
+    </button>
+  </main>
+
+  <section id="taskbar" aria-label="Taskbar">
+    <button id="start-button">START</button>
+    <div id="taskbar-hint">Retro OS // 0xJessicaa</div>
+    <div id="clock" aria-live="polite"></div>
+  </section>
+
+  <article id="about-window" class="window hidden" role="dialog" aria-modal="true" aria-labelledby="about-title">
+    <header class="window-header">
+      <div class="title" id="about-title">aboutme.txt</div>
+      <div class="window-controls">
+        <button type="button" class="close" aria-label="Close about me window">X</button>
+      </div>
+    </header>
+    <div class="window-body">
+      <pre>
+Jack of all Trades ⛩️
+Beanz Holder ♡ @KPRVERSE Team
+♡ @NIKE ♡ Bot Developer
+♡ Security Auditor ♡
+Ex-Jr Graphic Designer for @ESL @Ubisoft
+      </pre>
+    </div>
+  </article>
+
+  <article id="socials-window" class="window hidden" role="dialog" aria-modal="true" aria-labelledby="socials-title">
+    <header class="window-header">
+      <div class="title" id="socials-title">socials.txt</div>
+      <div class="window-controls">
+        <button type="button" class="close" aria-label="Close socials window">X</button>
+      </div>
+    </header>
+    <div class="window-body">
+      <pre>
+Discord  : Jessicaevans
+Twitter  : @0xJessicaa
+Mirror   : publishing soon...
+GitHub   : github.com/0xJessicaa
+      </pre>
+    </div>
+  </article>
+
+  <article id="projects-window" class="window hidden" role="dialog" aria-modal="true" aria-labelledby="projects-title">
+    <header class="window-header">
+      <div class="title" id="projects-title">projects.txt</div>
+      <div class="window-controls">
+        <button type="button" class="close" aria-label="Close projects window">X</button>
+      </div>
+    </header>
+    <div class="window-body">
+      <pre>
+> Active Builds
+  - Discord bot automation suite
+  - NFT analytics dashboards
+  - Security auditing playbook
+
+> Wishlist
+  - Retro pixel art zine
+  - Solidity experiment lab
+      </pre>
+    </div>
+  </article>
+
+  <script>
+    const icons = document.querySelectorAll('.icon');
+    const windows = document.querySelectorAll('.window');
+    const clockElement = document.getElementById('clock');
+    let highestZ = 20;
+
+    icons.forEach(icon => {
+      icon.addEventListener('dblclick', () => {
+        const targetId = icon.dataset.target;
+        openWindow(document.getElementById(targetId));
+      });
+
+      icon.addEventListener('keyup', (event) => {
+        if (event.key === 'Enter') {
+          const targetId = icon.dataset.target;
+          openWindow(document.getElementById(targetId));
+        }
+      });
+    });
+
+    windows.forEach(win => {
+      const closeBtn = win.querySelector('.close');
+      closeBtn.addEventListener('click', () => closeWindow(win));
+
+      win.addEventListener('mousedown', () => bringToFront(win));
+
+      enableDragging(win);
+    });
+
+    function openWindow(win) {
+      if (!win) return;
+      win.classList.remove('hidden');
+      bringToFront(win);
+    }
+
+    function closeWindow(win) {
+      win.classList.add('hidden');
+    }
+
+    function bringToFront(win) {
+      highestZ += 1;
+      win.style.zIndex = highestZ;
+    }
+
+    function enableDragging(win) {
+      const header = win.querySelector('.window-header');
+      let isDragging = false;
+      let offsetX = 0;
+      let offsetY = 0;
+
+      header.addEventListener('mousedown', (event) => {
+        isDragging = true;
+        bringToFront(win);
+        offsetX = event.clientX - win.offsetLeft;
+        offsetY = event.clientY - win.offsetTop;
+        document.body.style.userSelect = 'none';
+      });
+
+      window.addEventListener('mousemove', (event) => {
+        if (!isDragging) return;
+        const x = event.clientX - offsetX;
+        const y = event.clientY - offsetY;
+        win.style.left = Math.max(16, Math.min(window.innerWidth - win.offsetWidth - 16, x)) + 'px';
+        win.style.top = Math.max(16, Math.min(window.innerHeight - win.offsetHeight - 72, y)) + 'px';
+      });
+
+      window.addEventListener('mouseup', () => {
+        isDragging = false;
+        document.body.style.userSelect = '';
+      });
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      clockElement.textContent = `${hours}:${minutes}`;
+    }
+
+    updateClock();
+    setInterval(updateClock, 60000);
+
+    document.getElementById('start-button').addEventListener('click', () => {
+      windows.forEach((win, index) => {
+        setTimeout(() => openWindow(win), index * 120);
+      });
+    });
+  </script>
+</body>
+</html>
