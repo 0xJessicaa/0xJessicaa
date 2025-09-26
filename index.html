@@ -1691,6 +1691,7 @@
       z-index: 500;
       max-height: calc(100vh - 140px);
       overflow-y: auto;
+      overflow-x: visible;
     }
 
     #start-menu.open {
@@ -1796,7 +1797,8 @@
     }
 
     .start-menu-has-submenu:focus-within > .start-submenu,
-    .start-menu-has-submenu:hover > .start-submenu {
+    .start-menu-has-submenu:hover > .start-submenu,
+    .start-menu-has-submenu.open > .start-submenu {
       display: flex;
     }
 
@@ -2876,40 +2878,6 @@
   <div id="taskbar-hint">Jess OS // 0xJessicaa</div>
   <div id="clock" aria-live="polite"></div>
 </section>
-
-<style>
-
-  #start-menu { position: relative; }
-
-  .start-menu-has-submenu { position: relative; }
-
-  .start-submenu {
-    position: absolute;
-    top: 0;
-    left: 100%;          
-    display: none;      
-    z-index: 1000;
-    background: #c8aaff; 
-    padding: 4px;
-    border: 2px solid #603a93;
-  }
-
-  .start-submenu .start-menu-item {
-    display: block;
-    width: 100%;
-    text-align: left;
-    margin: 2px 0;
-  }
-
-  .start-menu-has-submenu:hover > .start-submenu,
-  .start-menu-has-submenu:focus-within > .start-submenu {
-    display: block;
-  }
-
-  #taskbar, #start-menu, .start-menu-has-submenu {
-
-  }
-</style>
 
   <article id="computer-window" class="window hidden" role="dialog" aria-modal="true" aria-labelledby="computer-title">
     <header class="window-header">
@@ -7412,7 +7380,12 @@ Not done yet
         const target = event.target;
         if (target instanceof HTMLButtonElement && target.classList.contains('start-menu-item')) {
           if (target.dataset.submenu) {
-            target.setAttribute('aria-expanded', 'true');
+            const parent = target.closest('.start-menu-has-submenu');
+            if (parent) {
+              closeStartSubmenus();
+              parent.classList.add('open');
+              target.setAttribute('aria-expanded', 'true');
+            }
             return;
           }
           const action = target.dataset.action;
